@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Record</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        label {
+            color: #6c6c6d;
+        }
+        input, select, button {
+            padding: 10px;
+            font-size: 16px;
+            outline: none;
+            text-transform: uppercase;
+            border: dotted 2px #FF4136;
+        }
+        button {
+            background-color:#FF4136;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #c13c30;
+        }
+        .record-container {
+            margin-top: 20px;
+        }
+        .record {
+            background-color: #b7f6b8;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .record-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .record-actions button {
+            background-color: #FF4136;
+        }
+        .record-actions button:hover {
+            background-color: #c13c30;
+        }
+        .btns {
+            background-color: #fff;
+            border: 2px #FF4136 double;
+            text-transform: none;
+            letter-spacing: 1px;
+            color: wheat;
+            width: 80%;
+            height: 100px;
+            background: #FF4136;
+            border-radius: 15px;
+        }
+        #grade{
+            color:#b7f6b8;
+            background-color: rgb(137, 97, 246);
+            padding: 10px;
+            font-size: larger;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Performance Record</h1>
+    <div id="btnDiv">
+        <center>
+            <p>Enter the required field to save your Performance Records</p>
+            <input type="button" id="btn" class="btns" value="Click here" onclick="clickMe()">
+        </center>
+    </div>
+    <div class="container" id="performanceRecords" style="display: none;">
+        <form id="studentForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="class">Class:</label>
+            <input type="text" id="class" required>
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" required>
+            <label for="fullMarks">Full Marks:</label>
+            <input type="number" id="fullMarks" required>
+            <label for="obtainedMarks">Obtained Marks:</label>
+            <input type="number" id="obtainedMarks" required>
+            <label for="remarks">Remarks:</label>
+            <select id="remarks" required>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Average">Average</option>
+                <option value="Poor">Poor</option>
+            </select>
+            <button type="submit" onclick="removeInp()">Add Record</button>
+        </form>
+    </div>
+    <br>
+    <div style="text-align: center;" id="grade">
+        <button id="calculateButton">Calculate Selected</button>
+        <p><strong> Percentage:</strong> <span id="combinedPercentage"></span></p>
+        <p><strong> Grade:</strong> <span id="combinedGrade"></span></p>
+    </div>
+    <br>
+    <br>
+    <div id="recordsContainer" class="container">
+        <marquee behavior="left" direction="">Records will be dynamically added here</marquee>
+        <hr>
+    </div>
+    <br>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const studentForm = document.getElementById('studentForm');
+            const recordsContainer = document.getElementById('recordsContainer');
+            const calculateButton = document.getElementById('calculateButton');
+            const combinedPercentageSpan = document.getElementById('combinedPercentage');
+            const combinedGradeSpan = document.getElementById('combinedGrade');
+
+            studentForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const studentClass = document.getElementById('class').value;
+                const subject = document.getElementById('subject').value;
+                const fullMarks = document.getElementById('fullMarks').value;
+                const obtainedMarks = document.getElementById('obtainedMarks').value;
+                const remarks = document.getElementById('remarks').value;
+                const date = new Date().toLocaleDateString();
+
+                const studentRecord = {
+                    id: Date.now(),
+                    name,
+                    studentClass,
+                    subject,
+                    fullMarks,
+                    obtainedMarks,
+                    remarks,
+                    date
+                };
+
+                addRecordToLocalStorage(studentRecord);
+                addRecordToContainer(studentRecord);
+                studentForm.reset();
+            });
+
+            function addRecordToLocalStorage(record) {
+                const records = getRecordsFromLocalStorage();
+                records.push(record);
+                localStorage.setItem('studentRecords', JSON.stringify(records));
+            }
+
+            function getRecordsFromLocalStorage() {
+                const records = localStorage.getItem('studentRecords');
+                return records ? JSON.parse(records) : [];
+            }
+
+            function addRecordToContainer(record) {
+                const recordDiv = document.createElement('div');
+                recordDiv.className = 'record';
+                recordDiv.innerHTML = `
+                    <div><strong>Name:</strong> ${record.name}</div>
+                    <div><strong>Class:</strong> ${record.studentClass}</div>
+                    <div><strong>Subject:</strong> ${record.subject}</div>
+                    <div><strong>Marks:</strong> ${record.obtainedMarks} / ${record.fullMarks}</div>
+                    <div><input type="checkbox" class="selectCheckbox" data-id="${record.id}"> Select for Calculation</div>
+                    <div><strong>Remarks:</strong> ${record.remarks}</div>
+                    <div><strong>Date:</strong> ${record.date}</div>
+                    <div class="record-actions"><button class="deleteBtn" data-id="${record.id}">Delete</button></div>
+                `;
+                recordsContainer.appendChild(recordDiv);
+            }
+
+            function displayRecords() {
+                const records = getRecordsFromLocalStorage();
+                records.forEach(addRecordToContainer);
+            }
+
+            recordsContainer.addEventListener('click', (event) => {
+                if (event.target.classList.contains('deleteBtn')) {
+                    const recordId = event.target.getAttribute('data-id');
+                    deleteRecordFromLocalStorage(recordId);
+                    event.target.closest('.record').remove();
+                }
+            });
+
+            calculateButton.addEventListener('click', () => {
+                const selectedCheckboxes = document.querySelectorAll('.selectCheckbox:checked');
+                if (selectedCheckboxes.length === 0) {
+                    alert('Please select at least one record to calculate.');
+                    return;
+                }
+
+                let totalObtainedMarks = 0;
+                let totalFullMarks = 0;
+
+                selectedCheckboxes.forEach(checkbox => {
+                    const recordId = checkbox.getAttribute('data-id');
+                    const record = getRecordById(recordId);
+                    totalObtainedMarks += parseFloat(record.obtainedMarks);
+                    totalFullMarks += parseFloat(record.fullMarks);
+                });
+
+                const combinedPercentage = calculatePercentage(totalObtainedMarks, totalFullMarks);
+                const combinedGrade = calculateGrade(combinedPercentage);
+
+                combinedPercentageSpan.textContent = `${combinedPercentage}%`;
+                combinedGradeSpan.textContent = combinedGrade;
+            });
+
+            function getRecordById(recordId) {
+                const records = getRecordsFromLocalStorage();
+                return records.find(record => record.id == recordId);
+            }
+
+            function calculatePercentage(obtainedMarks, fullMarks) {
+                return ((obtainedMarks / fullMarks) * 100).toFixed(2);
+            }
+
+            function calculateGrade(percentage) {
+                if (percentage >= 90) return 'A';
+                if (percentage >= 80) return 'B';
+                if (percentage >= 70) return 'C';
+                if (percentage >= 50) return 'D';
+                return 'E';
+            }
+
+            function deleteRecordFromLocalStorage(recordId) {
+                let records = getRecordsFromLocalStorage();
+                records = records.filter(record => record.id != recordId);
+                localStorage.setItem('studentRecords', JSON.stringify(records));
+            }
+
+            displayRecords();
+        });
+
+        function clickMe() {
+            document.getElementById("performanceRecords").style.display = "block";
+            document.getElementById("btnDiv").style.display = "none";
+            document.getElementById("recordsContainer").style.display = "none";
+            document.getElementById("grade").style.display = "none";
+        }
+
+        function removeInp() {
+            document.getElementById("performanceRecords").style.display = "none";
+            document.getElementById("recordsContainer").style.display = "block";
+            document.getElementById("btnDiv").style.display = "block";
+            document.getElementById("grade").style.display = "block";
+        }
+    </script>
+</body>
+</html>
