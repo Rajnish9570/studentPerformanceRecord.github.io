@@ -121,6 +121,7 @@
     <br>
     <div style="text-align: center;" id="grade">
         <h6>View student's percentage and grade </h6>
+        <button id="calculateButton">Calculate Selected marks </button
         <p><strong> Percentage:</strong> <span id="combinedPercentage"></span></p>
         <p><strong> Grade:</strong> <span id="combinedGrade"></span></p>
     </div>
@@ -130,10 +131,8 @@
         <marquee behavior="left" direction="">Records will be dynamically added here</marquee>
         <hr>
     </div>
-    <br>
-    <div id="grade">
-<button id="calculateButton">Calculate Selected marks </button>
-    </div>     
+    
+      
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const studentForm = document.getElementById('studentForm');
