@@ -34,10 +34,11 @@
             font-size: 16px;
             outline: none;
             text-transform: uppercase;
-            border: dotted 2px #FF4136;
+            border: none;
+            border-bottom: 2px silver solid;
         }
         button {
-            background-color:#FF4136;
+            background-color: #FF4136;
             color: white;
             border: none;
             border-radius: 4px;
@@ -80,12 +81,66 @@
             background: #FF4136;
             border-radius: 15px;
         }
-        #grade{
-            color:#b7f6b8;
+        #grade {
+            color: #b7f6b8;
             background-color: rgb(137, 97, 246);
             padding: 10px;
             font-size: larger;
             border: black 2px solid;
+        }
+        #credentials {
+            font-size: small;
+            text-align: center;
+            color: blueviolet;
+            letter-spacing: 1px;
+            font-weight: 800;
+            gap: 10px;
+            text-decoration: double 2.5px underline rgb(234, 30, 30);
+        }
+
+        /* Custom Checkbox */
+        .selectCheckbox {
+            display: none;
+        }
+        .selectCheckbox + label {
+            position: relative;
+            cursor: pointer;
+            padding-left: 30px;
+            display: inline-block;
+            font-size: 16px;
+            line-height: 20px;
+        }
+        .selectCheckbox + label:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #FF4136;
+            border-radius: 4px;
+            background-color: white;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .selectCheckbox:checked + label:before {
+            background-color: #FF4136;
+            border-color: #FF4136;
+        }
+        .selectCheckbox:checked + label:after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 10px;
+            height: 16px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .selectCheckbox:checked + label:after {
+            opacity: 1;
         }
     </style>
 </head>
@@ -100,17 +155,18 @@
         </center>
     </div>
     <div class="container" id="performanceRecords" style="display: none;">
+        <p id="credentials">Enter all required credentials of Students</p>
         <form id="studentForm">
             <label for="name">Name:</label>
-            <input type="text" id="name" required>
+            <input type="text" id="name" required placeholder="STUDENT'S NAME">
             <label for="class">Class:</label>
-            <input type="text" id="class" required>
+            <input type="text" id="class" required placeholder="STUDENT'S CLASS">
             <label for="subject">Subject:</label>
-            <input type="text" id="subject" required>
+            <input type="text" id="subject" required placeholder="STUDENT'S SUBJECT">
             <label for="fullMarks">Full Marks:</label>
-            <input type="number" id="fullMarks" required>
+            <input type="number" id="fullMarks" required placeholder="STUDENT'S FULL MARKS">
             <label for="obtainedMarks">Obtained Marks:</label>
-            <input type="number" id="obtainedMarks" required>
+            <input type="number" id="obtainedMarks" required placeholder="STUDENT'S OBTAINED MARKS">
             <label for="remarks">Remarks:</label>
             <select id="remarks" required>
                 <option value="Excellent">Excellent</option>
@@ -195,7 +251,10 @@
                     <div><strong>Remarks:</strong> ${record.remarks}</div>
                     <div><strong>Date:</strong> ${record.date}</div>
                     <div class="record-actions"><button class="deleteBtn" data-id="${record.id}">Delete</button></div>
-                    <div><input type="checkbox" class="selectCheckbox" data-id="${record.id}"> <strong>Select for Calculation </strong></div>
+                    <div>
+                        <input type="checkbox" class="selectCheckbox" id="checkbox-${record.id}" data-id="${record.id}">
+                        <label for="checkbox-${record.id}"><strong>Select for Calculation</strong></label>
+                    </div>
                 `;
                 recordsContainer.appendChild(recordDiv);
             }
