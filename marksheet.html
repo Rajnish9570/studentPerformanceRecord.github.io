@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Report Card</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .subjectRow {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .subjectRow input {
+            flex: 1;
+            min-width: 100px;
+            border: none;
+            outline: none;
+            box-shadow: 1px 1px  5px 1px gray;
+        }
+
+        button {
+            display: block;
+            margin: 10px auto;
+            background: white;
+            border: 1px solid blueviolet;
+            height: 30px;
+            color: blueviolet;
+        }
+
+        #reportCard {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2.5px blue solid;
+            border-radius: 8px;
+         
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+         background-color: skyblue;
+        }
+
+        table, th, td {
+            border: 2px solid blue;
+         color: blue;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+          
+        }
+        th{
+            color: black;
+            background-color: bisque;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #reportCard, #reportCard * {
+                visibility: visible;
+            }
+            #reportCard {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                border: none;
+            }
+            #reportCard button {
+                display: none;
+            }
+        }
+
+        p input {
+            width: 50%;
+            height: 35px;
+            padding: 5px;
+            font-size: 1rem;
+            outline: none;
+            border: none;
+            color: blue;
+            font-weight: 700;
+        }
+
+        label {
+            font-weight: 800;
+        }
+
+        @media (max-width: 600px) {
+            .subjectRow {
+                flex-direction: row;
+            }
+
+            .subjectRow input {
+                min-width: 50%;
+                height: 40px;
+              
+            }
+
+            form, #reportCard {
+                width: 100%;
+                margin: 0;
+                padding: 10px;
+            }
+
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            p input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Marksheet Generator</h1>
+    <form id="reportCardForm">
+        <div id="subjectsContainer">
+            <div class="subjectRow">
+                <input type="text" placeholder="Subject Name" class="subjectName"> 
+                <input type="number" placeholder="Full Marks" class="fullMarks"> 
+                <input type="number" placeholder="Obtained Marks" class="obtainedMarks">
+                <button type="button" onclick="removeSubject(this)">Remove</button>
+            </div>
+        </div>
+        <button type="button" onclick="addSubject()">Add Subject</button>
+        <button type="button" onclick="generateReportCard()">Generate Report Card</button>
+    </form>
+    <div id="reportCard" style="display:none;">
+        <h2>Result Marksheet</h2>
+        <p style="text-align: center;"><input type="text" placeholder="Institute Name" style="text-align: center;"></p>
+        <p><label for="">Student Name: </label><input type="text" placeholder="Student Name"></p>
+        <p><label for="">Class: </label> <input type="number" placeholder="Class"></p>
+        <p><label for=""> Teacher Name: </label> <input type="text" placeholder="Teacher Name"></p>
+        <p><label for="">Date: </label> <span id="currentDate"></span></p>
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Full Marks</th>
+                    <th>Obtained Marks</th>
+                </tr>
+            </thead>
+            <tbody id="reportContent"></tbody>
+            <tfoot>
+                <tr>
+                    <td>Total</td>
+                    <td id="totalFullMarks"></td>
+                    <td id="totalObtainedMarks"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Percentage</td>
+                    <td id="percentage"></td>
+                </tr>
+            </tfoot>
+            <p style="color: grey;float: right;">Signature <br>(Class teacher)</p>
+        </table>
+        <button onclick="printReportCard()">Print</button>
+        <button onclick="clearReportCard()">Clear Table</button>
+    </div>
+   <a href="index.html">Student record</a>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadReportCard();
+        });
+
+        function addSubject() {
+            const container = document.getElementById('subjectsContainer');
+            const newSubjectRow = document.createElement('div');
+            newSubjectRow.className = 'subjectRow';
+            newSubjectRow.innerHTML = `
+                <input type="text" placeholder="Subject Name" class="subjectName">
+                <input type="number" placeholder="Full Marks" class="fullMarks"> 
+                <input type="number" placeholder="Obtained Marks" class="obtainedMarks">
+                <button type="button" onclick="removeSubject(this)">Remove</button>
+            `;
+            container.appendChild(newSubjectRow);
+        }
+
+        function removeSubject(button) {
+            const row = button.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        function generateReportCard() {
+            const subjects = document.getElementsByClassName('subjectRow');
+            let totalFullMarks = 0;
+            let totalObtainedMarks = 0;
+            let reportData = [];
+
+            for (let subject of subjects) {
+                const subjectName = subject.getElementsByClassName('subjectName')[0].value;
+                const fullMarks = parseFloat(subject.getElementsByClassName('fullMarks')[0].value);
+                const obtainedMarks = parseFloat(subject.getElementsByClassName('obtainedMarks')[0].value);
+
+                if (!subjectName || isNaN(fullMarks) || isNaN(obtainedMarks)) {
+                    alert('Please fill in all fields correctly.');
+                    return;
+                }
+
+                totalFullMarks += fullMarks;
+                totalObtainedMarks += obtainedMarks;
+
+                reportData.push({
+                    subjectName,
+                    fullMarks,
+                    obtainedMarks
+                });
+            }
+
+            const percentage = (totalObtainedMarks / totalFullMarks) * 100;
+
+            // Save report data in local storage
+            localStorage.setItem('reportData', JSON.stringify(reportData));
+            localStorage.setItem('totalFullMarks', totalFullMarks);
+            localStorage.setItem('totalObtainedMarks', totalObtainedMarks);
+
+            displayReportCard(reportData, totalFullMarks, totalObtainedMarks, percentage);
+        }
+
+        function displayReportCard(reportData, totalFullMarks, totalObtainedMarks, percentage) {
+            const reportCard = document.getElementById('reportCard');
+            const reportContent = document.getElementById('reportContent');
+            reportContent.innerHTML = '';
+
+            reportData.forEach(data => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.subjectName}</td>
+                    <td>${data.fullMarks}</td>
+                    <td>${data.obtainedMarks}</td>
+                `;
+                reportContent.appendChild(row);
+            });
+
+            document.getElementById('totalFullMarks').textContent = totalFullMarks;
+            document.getElementById('totalObtainedMarks').textContent = totalObtainedMarks;
+            document.getElementById('percentage').textContent = `${percentage.toFixed(2)}%`;
+
+            // Display current date
+            const currentDate = new Date().toLocaleDateString();
+            document.getElementById('currentDate').textContent = currentDate;
+
+            reportCard.style.display = 'block';
+        }
+
+        function printReportCard() {
+            window.print();
+        }
+
+        function clearReportCard() {
+            localStorage.removeItem('reportData');
+            localStorage.removeItem('totalFullMarks');
+            localStorage.removeItem('totalObtainedMarks');
+            document.getElementById('reportCard').style.display = 'none';
+        }
+
+        function loadReportCard() {
+            const reportData = JSON.parse(localStorage.getItem('reportData'));
+            const totalFullMarks = localStorage.getItem('totalFullMarks');
+            const totalObtainedMarks = localStorage.getItem('totalObtainedMarks');
+
+            if (reportData && totalFullMarks && totalObtainedMarks) {
+                const percentage = (totalObtainedMarks / totalFullMarks) * 100;
+                displayReportCard(reportData, totalFullMarks, totalObtainedMarks, percentage);
+            }
+        }
+    </script>
+</body>
+</html>
