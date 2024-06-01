@@ -1,1 +1,305 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Test</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #head {
+            text-align: center;
+            color: blue;
+        }
+        textarea {
+            width: 90%;
+            height: 50px;
+            padding: 8px;
+            margin: 5px 0;
+            text-transform: uppercase;
+            resize: none;
+            letter-spacing: 1px;
+        }
+        .question {
+            margin-bottom: 20px;
+            color: blue;
+            letter-spacing: 1px;
+        }
+        .clear-btn, .calc-btn, .restart-btn {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .marks-input {
+            width: 60px;
+            padding: 5px;
+            margin: 5px;
+        }
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: red;
+            text-align: center;
+        }
+        #main-content {
+            display: block;
+        }
+        #restart-container {
+            display: none;
+            text-align: center;
+            margin-top: 20%;
+        }
+    </style>
+</head>
+<body>
+    <div id="head">
+        <h1>Online Test</h1>
+        <p>Name: Tejash Kumar | Class: V</p>
+        <p>Time: 1 hr | Subject: Mathematics</p>
+        <div class="timer" id="timer">Time Remaining: 01:00:00</div>
+    </div>
+
+    <div id="main-content">
+        <div style="text-align: center;">
+            <button class="calc-btn" onclick="calculateTotal()">Calculate Total Marks</button>
+            <p style="font-size: 1.7rem; font-weight: 900; color: blueviolet;">Total Marks: <span id="total_marks"></span> <span id="full_marks_total">30.5</span></p>
+        </div>
+        <div id="question">
+            <!-- Template for each question -->
+            <div class="question">
+                <p>Ques 01: Write a number name for 98000032 in Indian system.</p>
+                <textarea id="q1"></textarea> <br>
+                <input type="number" id="q1_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q1_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q1')">Clear</button>
+            </div>
+            <!-- Repeat for other questions... -->
+            <div class="question">
+                <p>Ques 02: Write a number name for 897200056 in international system.</p>
+                <textarea id="q2"></textarea> <br>
+                <input type="number" id="q2_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q2_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q2')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 03: Write in figure in Indian system - <span>Thirty five crore four lakh eight hundred ninety.</span></p>
+                <textarea id="q3"></textarea> <br>
+                <input type="number" id="q3_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q3_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q3')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 04: Write in figure in international system - <span>Nine million two thousand four.</span></p>
+                <textarea id="q4"></textarea> <br>
+                <input type="number" id="q4_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q4_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q4')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 05: Write it in expanded form 987200056</p>
+                <textarea id="q5"></textarea> <br>
+                <input type="number" id="q5_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q5_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q5')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 06: Write it in short form 800000 + 70000 + 400 + 2</p>
+                <textarea id="q6"></textarea> <br>
+                <input type="number" id="q6_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q6_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q6')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 07: Addition: 95723 + 4356 + 98</p>
+                <textarea id="q7"></textarea> <br>
+                <input type="number" id="q7_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q7_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q7')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 08: Subtraction: 4892 - 2989</p>
+                <textarea id="q8"></textarea> <br>
+                <input type="number" id="q8_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q8_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q8')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 09: Multiplication: 6275 &times; 321 &times; 22</p>
+                <textarea id="q9"></textarea> <br>
+                <input type="number" id="q9_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q9_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q9')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 10: Division: 2480 &divide; 62</p>
+                <textarea id="q10"></textarea> <br>
+                <input type="number" id="q10_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q10_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q10')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 11: Find both place value and face value of highlighted digit - 98<mark>7</mark>2654</p>
+                <textarea id="q11"></textarea> <br>
+                <input type="number" id="q11_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q11_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q11')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 12: Write 339 in Roman numerals.</p>
+                <textarea id="q12"></textarea> <br>
+                <input type="number" id="q12_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q12_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q12')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 13: Write 43 in Roman numerals.</p>
+                <textarea id="q13"></textarea> <br>
+                <input type="number" id="q13_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q13_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q13')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 14: Find the Remainder, Dividend, Quotient, Divisor - 92 &divide; 2</p>
+                <textarea id="q14"></textarea> <br>
+                <input type="number" id="q14_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="q14_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('q14')">Clear</button>
+            </div>
+            <div class="question">
+                <p>Ques 15: State "T for True" and "F for False" for the following statements.</p>
+                <p>(a) Million comes in Indian system.</p>
+                <textarea id="tf1"></textarea> <br>
+                <input type="number" id="tf1_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="tf1_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('tf1')">Clear</button>
+                <p>(b) The Successor of 25678 is 25680.</p>
+                <textarea id="tf2"></textarea> <br>
+                <input type="number" id="tf2_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="tf2_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('tf2')">Clear</button>
+                <p>(c) VIII is called Arabic number.</p>
+                <textarea id="tf3"></textarea> <br>
+                <input type="number" id="tf3_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="tf3_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('tf3')">Clear</button>
+                <p>(d) XLIX is called 49.</p>
+                <textarea id="tf4"></textarea> <br>
+                <input type="number" id="tf4_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="tf4_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('tf4')">Clear</button>
+                <p>(e) The place value of highlighted digit in 98<mark>7</mark>6259 is Seven Thousand.</p>
+                <textarea id="tf5"></textarea> <br>
+                <input type="number" id="tf5_full" class="marks-input" placeholder="Full Marks">
+                <input type="number" id="tf5_obt" class="marks-input" placeholder="Obtained">
+                <button class="clear-btn" onclick="clearAnswer('tf5')">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="restart-container">
+        <button class="restart-btn" onclick="restartPage()" st>Sorry! Time is Over</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const textareas = document.querySelectorAll('textarea');
+            const fullMarksInputs = document.querySelectorAll('.marks-input[id$="_full"]');
+            const obtainedMarksInputs = document.querySelectorAll('.marks-input[id$="_obt"]');
+            const answers = JSON.parse(localStorage.getItem('answers')) || {};
+            const fullMarks = JSON.parse(localStorage.getItem('fullMarks')) || {};
+            const obtainedMarks = JSON.parse(localStorage.getItem('obtainedMarks')) || {};
+
+            textareas.forEach(textarea => {
+                textarea.value = answers[textarea.id] || '';
+                textarea.addEventListener('input', (e) => {
+                    answers[e.target.id] = e.target.value;
+                    localStorage.setItem('answers', JSON.stringify(answers));
+                });
+            });
+
+            fullMarksInputs.forEach(input => {
+                input.value = fullMarks[input.id] || '';
+                input.addEventListener('input', (e) => {
+                    fullMarks[e.target.id] = e.target.value;
+                    localStorage.setItem('fullMarks', JSON.stringify(fullMarks));
+                });
+            });
+
+            obtainedMarksInputs.forEach(input => {
+                input.value = obtainedMarks[input.id] || '';
+                input.addEventListener('input', (e) => {
+                    obtainedMarks[e.target.id] = e.target.value;
+                    localStorage.setItem('obtainedMarks', JSON.stringify(obtainedMarks));
+                });
+            });
+
+            startTimer();
+        });
+
+        function clearAnswer(id) {
+            const textarea = document.getElementById(id);
+            textarea.value = '';
+            const answers = JSON.parse(localStorage.getItem('answers')) || {};
+            delete answers[id];
+            localStorage.setItem('answers', JSON.stringify(answers));
+
+            const obtInput = document.getElementById(id + '_obt');
+            obtInput.value = '';
+            const obtainedMarks = JSON.parse(localStorage.getItem('obtainedMarks')) || {};
+            delete obtainedMarks[obtInput.id];
+            localStorage.setItem('obtainedMarks', JSON.stringify(obtainedMarks));
+        }
+
+        function calculateTotal() {
+            const obtainedMarks = JSON.parse(localStorage.getItem('obtainedMarks')) || {};
+            const fullMarks = JSON.parse(localStorage.getItem('fullMarks')) || {};
+            let totalObtained = 0;
+            let totalFull = 0;
+
+            for (let key in obtainedMarks) {
+                totalObtained += parseFloat(obtainedMarks[key]) || 0;
+            }
+            for (let key in fullMarks) {
+                totalFull += parseFloat(fullMarks[key]) || 0;
+            }
+
+            document.getElementById('total_marks').textContent = totalObtained;
+            document.getElementById('full_marks_total').textContent = totalFull;
+        }
+
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            let timeLeft = 10;
+
+            const interval = setInterval(() => {
+                const hours = Math.floor(timeLeft / 3600);
+                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const seconds = timeLeft % 60;
+
+                timerElement.textContent = `Time Remaining: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    disableInputs();
+                } else {
+                    timeLeft--;
+                }
+            }, 1000);
+        }
+
+        function disableInputs() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('restart-container').style.display = 'block';
+        }
+
+        function restartPage() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
